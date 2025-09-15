@@ -17,7 +17,7 @@ app = FastAPI()
 origins = [
     "http://localhost:3000",  # your Next.js dev server
     "http://127.0.0.1:3000",
-    "https://auth-frontend-bice.vercel.app/"
+    "https://auth-frontend-bice.vercel.app"
     # add production domain(s) here
 ]
 
