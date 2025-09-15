@@ -28,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MAX_DEVICES = 2
+MAX_DEVICES = 1
 
 # DB Dependency
 def get_db():
@@ -108,12 +108,13 @@ async def get_me(user=Depends(get_current_user)):
         "full_name": user.get("name"),
         "phone": user.get("phone_number", "N/A")
     }
-
-# Optional: check if current device session exists
 @app.get("/api/check-session")
-async def check_session(device_id: str, user=Depends(get_current_user), db: DbSession = Depends(get_db)):
+async def check_session(request:Request,device_id: str=None, user=Depends(get_current_user), db: DbSession = Depends(get_db)):
+    if request.method == "OPTIONS":
+        return {}
     user_id = user["sub"]
     session = db.query(SessionModel).filter(SessionModel.user_id == user_id, SessionModel.device_id == device_id).first()
+    print(session)
     if not session:
         raise HTTPException(status_code=401, detail="You have been logged out due to another device login")
     return {"status": "active", "last_used": session.last_used}
